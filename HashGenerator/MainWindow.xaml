@@ -1,0 +1,65 @@
+﻿<Window x:Class="HashGenerator.MainWindow"
+        x:Name="mainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HashGenerator"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Hash Generator" Height="330" SizeToContent="Width">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="White" FontSize="12">
+            <MenuItem Header="_File" x:Name="FileMenu">
+                <MenuItem Header="_Exit" x:Name="Exit" Click="FileExitClick" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="_Help" x:Name="HelpMenu">
+                <MenuItem Header="About" x:Name="ShowAboutBox" Click="ShowAbout" />
+            </MenuItem>
+        </Menu>
+        <Grid HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="210"/>
+                <RowDefinition Height="98"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition MinWidth="464"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="TextEntryBox" HorizontalAlignment="Left" Margin="4,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="223" Height="186" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New"/>
+            <TextBox x:Name="HashBox" HorizontalAlignment="Left" Margin="238,10,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" MinWidth="223" Height="186" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New"/>
+            <ComboBox x:Name="HashSelection" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="104" Height="22" Grid.Column="1">
+                <ComboBoxItem Content="Keccak-224" x:Name="combo_keccak224"/>
+                <ComboBoxItem Content="Keccak-256" x:Name="combo_keccak256"/>
+                <ComboBoxItem Content="Keccak-384" x:Name="combo_keccak384"/>
+                <ComboBoxItem Content="Keccak-512" x:Name="combo_keccak512"/>
+                <ComboBoxItem Content="MD2" x:Name="combo_md2"/>
+                <ComboBoxItem Content="MD4" x:Name="combo_md4"/>
+                <ComboBoxItem Content="MD5" x:Name="combo_md5"/>
+                <ComboBoxItem Content="NTLM" x:Name="combo_ntlm"/>
+                <ComboBoxItem Content="RIPEMD128" x:Name="combo_ripemd128"/>
+                <ComboBoxItem Content="RIPEMD160" x:Name="combo_ripemd160"/>
+                <ComboBoxItem Content="RIPEMD256" x:Name="combo_ripemd256"/>
+                <ComboBoxItem Content="RIPEMD320" x:Name="combo_ripemd320"/>
+                <ComboBoxItem Content="SHA1" x:Name="combo_sha1"/>
+                <ComboBoxItem Content="SHA3" x:Name="combo_sha3"/>
+                <ComboBoxItem Content="SHA224" x:Name="combo_sha224"/>
+                <ComboBoxItem Content="SHA256" x:Name="combo_sha256"/>
+                <ComboBoxItem Content="SHA384" x:Name="combo_sha384"/>
+                <ComboBoxItem Content="SHA512" x:Name="combo_sha512"/>
+                <ComboBoxItem Content="SHA3-224" x:Name="combo_sha3_224"/>
+                <ComboBoxItem Content="SHA3-256" x:Name="combo_sha3_256"/>
+                <ComboBoxItem Content="SHA3-384" x:Name="combo_sha3_384"/>
+                <ComboBoxItem Content="SHA3-512" x:Name="combo_sha3_512"/>
+                <ComboBoxItem Content="SHAKE128" x:Name="combo_shake128"/>
+                <ComboBoxItem Content="SHAKE256" x:Name="combo_shake256"/>
+            </ComboBox>
+            <Button x:Name="GenerateHashButton" Content="Generate Hashes" HorizontalAlignment="Left" VerticalAlignment="Top" Click="GenerateHashes" Grid.Row="1" Width="104" Height="22" Margin="123,0,0,0" Grid.Column="1"/>
+            <Button x:Name="ClearResultsButton" Content="Clear Results" HorizontalAlignment="Right" VerticalAlignment="Top" Click="ClearResults" Grid.Row="1" Width="104" Height="22" Margin="0,0,122,0" Grid.Column="1"/>
+            <Button x:Name="SaveResultsButton" Content="Save Results" HorizontalAlignment="Right" VerticalAlignment="Top" Click="SaveResults" Grid.Row="1" Width="104" Height="22" Margin="0,0,4,0" Grid.Column="1"/>
+            <CheckBox Content="Uppercase" x:Name="HashCase" HorizontalAlignment="Left" Margin="4,27,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1" Height="15" Width="76"/>
+        </Grid>
+    </DockPanel>
+</Window>
