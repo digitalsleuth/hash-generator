@@ -6,8 +6,8 @@ using System;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
-using System.IO.Compression;
-using Org.BouncyCastle.Crypto;
+using System.IO.Hashing;
+using System.Buffers.Binary;
 
 namespace HashGenerator
 {
@@ -495,13 +495,77 @@ namespace HashGenerator
         }
         public static string GenerateCRC32(string input)
         {
-            
-            
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-            //IDigest crc32 = new Org.BouncyCastle.Crypto.Digests.
-            //byte[] hashBytes = new byte[crc32.Get]
-            //return crc32Hash.ToString();
-            return "1";
+            var crc32 = new Crc32();
+            crc32.Append(inputBytes);
+            byte[] hash = crc32.GetCurrentHash();
+            string crc32hash = BinaryPrimitives.ReadUInt32LittleEndian(hash).ToString("X");
+            return crc32hash;
+        }
+        public static string GenerateCRC64(string input)
+        {
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            var crc64 = new Crc64();
+            crc64.Append(inputBytes);
+            byte[] hash = crc64.GetCurrentHash();
+            string crc64hash = BitConverter.ToString(hash).Replace("-", "");
+            return crc64hash;
+        }
+        public static string GenerateFNV132(string input)
+        {
+            uint FNV_32_PRIME = 0x01000193;
+            uint FNV_32_INIT = 0x811c9dc5;
+            uint hash = FNV_32_INIT;
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            foreach (byte b in inputBytes)
+            {
+                hash = (uint)((hash * FNV_32_PRIME) % Math.Pow(2, 32));
+                hash ^= (uint)b;
+            }
+            string result = hash.ToString("X");
+            return result;
+        }
+        public static string GenerateFNV1A32(string input)
+        {
+            uint FNV_32_PRIME = 0x01000193;
+            uint FNV_32_INIT = 0x811c9dc5;
+            uint hash = FNV_32_INIT;
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            foreach (byte b in inputBytes)
+            {
+                hash ^= (uint)b;
+                hash = (uint)((hash * FNV_32_PRIME) % Math.Pow(2, 32));
+            }
+            string result = hash.ToString("X");
+            return result;
+        }
+        public static string GenerateFNV164(string input)
+        {
+            ulong FNV_64_PRIME = 0x100000001b3;
+            ulong FNV_64_INIT = 0xcbf29ce484222325;
+            ulong hash = FNV_64_INIT;
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            foreach (byte b in inputBytes)
+            {
+                hash = (ulong)((hash * FNV_64_PRIME));
+                hash ^= (ulong)b;
+            }
+            string result = hash.ToString("X");
+            return result;
+        }
+        public static string GenerateFNV1A64(string input)
+        {
+            ulong FNV_64_PRIME = 0x100000001b3;
+            ulong FNV_64_INIT = 0xcbf29ce484222325;
+            ulong hash = FNV_64_INIT;
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            foreach (byte b in inputBytes)
+            {
+                hash ^= (ulong)b;
+                hash = (ulong)((hash * FNV_64_PRIME));
+            }
+            string result = hash.ToString("X");
+            return result;
         }
         public void GenerateHashes(object sender, RoutedEventArgs e)
         {
@@ -511,7 +575,31 @@ namespace HashGenerator
             foreach (string line in TextEntryBox.Text.Split("\n"))
             {
                 string textLine = line.TrimEnd();
-                if (selection == "Keccak-224")
+                if (selection == "CRC32")
+                {
+                    generatedHash = GenerateCRC32(textLine);
+                }
+                else if (selection == "CRC64")
+                {
+                    generatedHash = GenerateCRC64(textLine);
+                }
+                else if (selection == "FNV1-32")
+                {
+                    generatedHash = GenerateFNV132(textLine);
+                }
+                else if (selection == "FNV1A-32")
+                {
+                    generatedHash = GenerateFNV1A32(textLine);
+                }
+                else if (selection == "FNV1-64")
+                {
+                    generatedHash = GenerateFNV164(textLine);
+                }
+                else if (selection == "FNV1A-64")
+                {
+                    generatedHash = GenerateFNV1A64(textLine);
+                }
+                else if (selection == "Keccak-224")
                 {
                     generatedHash = GenerateKeccak224(textLine);
                 }
@@ -658,6 +746,5 @@ namespace HashGenerator
         {
             Close();
         }
-
     }
 }
