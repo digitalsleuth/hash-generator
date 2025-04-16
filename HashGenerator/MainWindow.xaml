@@ -28,8 +28,8 @@
                 <ColumnDefinition MinWidth="464"/>
                 <ColumnDefinition Width="10"/>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="TextEntryBox" HorizontalAlignment="Left" Margin="4,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="223" Height="186" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New"/>
-            <TextBox x:Name="HashBox" HorizontalAlignment="Left" Margin="238,10,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" MinWidth="223" Height="186" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New"/>
+            <TextBox x:Name="TextEntryBox" HorizontalAlignment="Left" Margin="4,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="223" Height="186" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New" ScrollViewer.ScrollChanged="TextBoxScrollChanged"/>
+            <TextBox x:Name="HashBox" HorizontalAlignment="Left" Margin="238,10,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" MinWidth="223" Height="186" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Grid.Column="1" FontFamily="Courier New" ScrollViewer.ScrollChanged="TextBoxScrollChanged"/>
             <ComboBox x:Name="HashSelection" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="104" Height="22" Grid.Column="1">
                 <ComboBoxItem Content="CRC32" x:Name="combo_crc32"/>
                 <ComboBoxItem Content="CRC64" x:Name="combo_crc64"/>

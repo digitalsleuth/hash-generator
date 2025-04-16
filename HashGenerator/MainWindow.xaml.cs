@@ -8,12 +8,13 @@ using Microsoft.Win32;
 using System.IO;
 using System.IO.Hashing;
 using System.Buffers.Binary;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace HashGenerator
 {
     public partial class MainWindow : Window
     {
-        private static readonly string? appName = Assembly.GetExecutingAssembly().GetName().Name;
         #pragma warning disable CS8602 // Deference of a possibly null reference.
         private static readonly Version? appVersion = new(Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
         public MainWindow()
@@ -702,6 +703,39 @@ namespace HashGenerator
             }
 
         }
+        private bool isSyncingScroll = false;
+        private void TextBoxScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (isSyncingScroll) return;
+
+            var source = sender as TextBox;
+            var target = source == TextEntryBox ? HashBox : TextEntryBox;
+
+            var sourceScroll = GetScrollViewer(source);
+            var targetScroll = GetScrollViewer(target);
+
+            if (sourceScroll != null && targetScroll != null)
+            {
+                isSyncingScroll = true;
+                targetScroll.ScrollToVerticalOffset(sourceScroll.VerticalOffset);
+                isSyncingScroll = false;
+            }
+        }
+
+        private ScrollViewer? GetScrollViewer(DependencyObject dep)
+        {
+            if (dep is ScrollViewer viewer)
+                return viewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dep); i++)
+            {
+                var child = VisualTreeHelper.GetChild(dep, i);
+                var result = GetScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
         public void ClearResults(object sender, RoutedEventArgs e)
         { 
             HashBox.Clear();
@@ -715,7 +749,7 @@ namespace HashGenerator
                 $"Author: Corey Forman (digitalsleuth)\n" +
                 $"Source: https://github.com/digitalsleuth/hash-generator\n\n" +
                 $"Would you like to visit the repo on GitHub?",
-                $"Hash Generator v{appVersion}", MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                $"Hash Generator v{appVersion}", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
                 Process.Start(new ProcessStartInfo($"https://github.com/digitalsleuth/hash-generator") { UseShellExecute = true });
@@ -726,16 +760,31 @@ namespace HashGenerator
             FileSave();
         }
         private void FileSave()
-        // Save the contents of the Hash Text Box as a Text File
+        // Save the contents of both text boxes as a CSV File
         {
+            string[] leftLines = TextEntryBox.Text.Split(["\r\n", "\n"], StringSplitOptions.None);
+            string[] rightLines = HashBox.Text.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+            int lineCount = Math.Min(leftLines.Length, rightLines.Length);
+
+            StringBuilder result = new();
+
+            for (int i = 0; i < lineCount; i++)
+            {
+                if (leftLines[i] == "")
+                {
+                    leftLines[i] = "<blank>";
+                }
+                result.AppendLine($"{leftLines[i]},{rightLines[i]}");
+            }
+
             try
             {
                 SaveFileDialog saveFileDialog = new()
                 {
-                    Filter = "Text File | *.txt"
+                    Filter = "CSV File | *.csv"
                 };
                 if (saveFileDialog.ShowDialog() == true)
-                    File.WriteAllText(saveFileDialog.FileName, HashBox.Text);
+                    File.WriteAllText(saveFileDialog.FileName, result.ToString());
             }
             catch (Exception ex)
             {
